@@ -2,11 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Scanner;
 
 class Kalender {
-    private List<Activiteiten> activiteit = new ArrayList<>();
-    private List<Groepsleden> groepslid = new ArrayList<>();
-    private List<Reserveringen> reservering = new ArrayList<>();
+    private final List<Activiteiten> activiteit = new ArrayList<>();
+    private final List<Groepsleden> groepslid = new ArrayList<>();
+    private final List<Reserveringen> reservering = new ArrayList<>();
 
     public void toevoegenActiviteiten (Activiteiten voegActiviteit) {
         activiteit.add(voegActiviteit);
@@ -31,23 +32,11 @@ class Kalender {
     }
 }
 class Groepsleden {
-    private int id;
+    private final int id;
     private String naam;
 
     public Groepsleden(int id, String naam) {
         this.id = id;
-        this.naam = naam;
-    }
-    public int getId() {
-        return id;
-    }
-    public String getNaam() {
-        return naam;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
-    public void setNaam(String naam) {
         this.naam = naam;
     }
     public String toString() {
@@ -55,23 +44,11 @@ class Groepsleden {
     }
 }
 abstract class Activiteiten {
-    private String naam;
-    private String locatie;
+    private final String naam;
+    private final String locatie;
 
     public Activiteiten (String naam, String locatie) {
         this.naam = naam;
-        this.locatie = locatie;
-    }
-    public String getNaam() {
-        return naam;
-    }
-    public String getLocatie() {
-        return locatie;
-    }
-    public void setNaam() {
-        this.naam = naam;
-    }
-    public void setLocatie() {
         this.locatie = locatie;
     }
     public abstract String getType();
@@ -80,35 +57,41 @@ abstract class Activiteiten {
     }
 }
 
-class Afspraak extends Activiteiten {
-    public Afspraak (String naam, String locatie) {
+class School extends Activiteiten {
+    private String soortKlas;
+    public School (String naam, String locatie, String soortKlas) {
         super(naam, locatie);
+        this.soortKlas = soortKlas;
     }
     @Override public String getType() {
-        return "Afspraak";
+        return "School, Klas: " + soortKlas;
     }
 }
 class Evenement extends Activiteiten {
-    public Evenement (String naam, String locatie) {
+    private int aantalDeelnemers;
+    public Evenement (String naam, String locatie, int aantalDeelnemers) {
         super(naam, locatie);
+        this.aantalDeelnemers = aantalDeelnemers;
     }
     @Override public String getType() {
-        return "Evenement";
+        return "Evenement, Aantal Deelnemers: " + aantalDeelnemers;
     }
 }
 class Date extends Activiteiten {
-    public Date (String naam, String locatie) {
+    private String relatieStatus;
+    public Date (String naam, String locatie, String relatieStatus) {
         super(naam, locatie);
+        this.relatieStatus = relatieStatus;
     }
     @Override public String getType() {
-        return "Date";
+        return "Date, Relatieschip Status: " + relatieStatus;
     }
 }
 class Reserveringen {
-    private List<Groepsleden> groepsleden;
-    private Activiteiten activiteit;
-    private LocalDate datum;
-    private LocalTime tijdstip;
+    private final List<Groepsleden> groepsleden;
+    private final Activiteiten activiteit;
+    private final LocalDate datum;
+    private final LocalTime tijdstip;
 
     public Reserveringen (Activiteiten activiteit, LocalDate datum, LocalTime tijdstip) {
         this.groepsleden = new ArrayList<>();
@@ -131,24 +114,26 @@ class Reserveringen {
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         Kalender kalender = new Kalender();
 
         Groepsleden denie = new Groepsleden(1, "Denie");
-        kalender.toevoegenGroepsleden(denie);
         Groepsleden stan = new Groepsleden(2, "Stan");
-        kalender.toevoegenGroepsleden(stan);
         Groepsleden randomMeisje = new Groepsleden(3, "Sara");
+        Groepsleden marcel = new Groepsleden(4, "Marcel");
 
-        Afspraak tandarts = new Afspraak("Tandarts", "Tandartsen Groep M2");
-        kalender.toevoegenActiviteiten(tandarts);
+        School school = new School("De Haagse Hogeschool", "Johanna Westerdijkplein 75, 2521 EN Den Haag", "Scrums");
+        kalender.toevoegenActiviteiten(school);
 
-        Evenement feest = new Evenement("Feestje bij Stan", "Stans huis");
+        Evenement feest = new Evenement("Feestje bij Stan", "Stans huis", 20);
         kalender.toevoegenActiviteiten(feest);
 
-        Date date = new Date("Date met vriendin", "Volle Maan");
+        Date date = new Date("Date met vriendin", "Volle Maan", "Talking Stage");
         kalender.toevoegenActiviteiten(date);
 
-        Reserveringen reservering1 = new Reserveringen(tandarts, LocalDate.of(2025,4,23), LocalTime.of(19, 30));
+        School school1 = new School("De Haagse Hogeschool", "Johanna Westerdijkplein 75, 2521 EN Den Haag", "Review");
+
+        Reserveringen reservering1 = new Reserveringen(school, LocalDate.of(2025,4,23), LocalTime.of(10, 30));
         reservering1.toevoegGroepslid(denie);
         kalender.toevoegenReservering(reservering1);
 
@@ -162,9 +147,30 @@ public class Main {
         reservering3.toevoegGroepslid(randomMeisje);
         kalender.toevoegenReservering(reservering3);
 
-        for(int i = 0; i < kalender.getReservering().size(); i++) {
-            System.out.println(kalender.getReservering().get(i));
-        }
+        Reserveringen reservering4 = new Reserveringen(school1, LocalDate.of(2025, 5, 1), LocalTime.of(12, 0));
+        reservering4.toevoegGroepslid(marcel);
+        reservering4.toevoegGroepslid(denie);
+        kalender.toevoegenReservering(reservering4);
 
+        int exit = 0;
+
+        while (exit == 0) {
+            System.out.print("Type een nummer (0-" + (kalender.getReservering().size() - 1) + ") om een reservatie te bekijken, of enter -1 om te verlaten: ");
+            if (scanner.hasNextInt()) {
+                int userInput = scanner.nextInt();
+
+                if (userInput >= 0 && userInput < kalender.getReservering().size()) {
+                    System.out.println(kalender.getReservering().get(userInput));
+                } else if (userInput == -1) {
+                    exit = 1;
+                    System.out.println("Exiting the program.");
+                } else {
+                    System.out.println("Foute Input. Type een nummer tussen 0 en " + (kalender.getReservering().size() - 1) + " of enter -1 om te verlaten");
+                }
+            } else {
+                System.out.println("Foute Input");
+                scanner.nextInt();
+            }
+        }
     }
 }
