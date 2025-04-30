@@ -120,7 +120,6 @@ public class Main {
         Groepsleden denie = new Groepsleden(1, "Denie");
         Groepsleden stan = new Groepsleden(2, "Stan");
         Groepsleden randomMeisje = new Groepsleden(3, "Sara");
-        Groepsleden marcel = new Groepsleden(4, "Marcel");
 
         School school = new School("De Haagse Hogeschool", "Johanna Westerdijkplein 75, 2521 EN Den Haag", "Scrums");
         kalender.toevoegenActiviteiten(school);
@@ -130,8 +129,6 @@ public class Main {
 
         Date date = new Date("Date met vriendin", "Volle Maan", "Talking Stage");
         kalender.toevoegenActiviteiten(date);
-
-        School school1 = new School("De Haagse Hogeschool", "Johanna Westerdijkplein 75, 2521 EN Den Haag", "Review");
 
         Reserveringen reservering1 = new Reserveringen(school, LocalDate.of(2025,4,23), LocalTime.of(10, 30));
         reservering1.toevoegGroepslid(denie);
@@ -146,11 +143,6 @@ public class Main {
         reservering3.toevoegGroepslid(denie);
         reservering3.toevoegGroepslid(randomMeisje);
         kalender.toevoegenReservering(reservering3);
-
-        Reserveringen reservering4 = new Reserveringen(school1, LocalDate.of(2025, 5, 1), LocalTime.of(12, 0));
-        reservering4.toevoegGroepslid(marcel);
-        reservering4.toevoegGroepslid(denie);
-        kalender.toevoegenReservering(reservering4);
 
         int exit = 0;
 
